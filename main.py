@@ -1,16 +1,10 @@
 from fastapi import FastAPI
-from mongodb import collection
+from controllers.user_controller import router as user_router
 
-# API Methods
 app = FastAPI()
 
+app.include_router(user_router, prefix="/users")
 
-@app.get('/')
-async def root():
-    return {'example': 'This is an example', 'data': 0}
-
-
-@app.post('/')
-async def root():
-    collection.insert_one({"name": "V", "role": "Mercenary"})
-    return {'message': 'Dados salvos com sucesso!'}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
