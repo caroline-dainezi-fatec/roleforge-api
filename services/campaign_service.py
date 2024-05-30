@@ -55,6 +55,12 @@ class CampaignService:
 
     def update_campaign(self, campaign_id: str, campaign: CampaignUpdate) -> dict[str, str] | None:
         update_data = {k: v for k, v in campaign.model_dump().items() if v is not None}
+
+        if 'master' in update_data:
+            update_data['master'] = ObjectId(update_data['master'])
+        if 'players' in update_data:
+            update_data['players'] = [ObjectId(player) for player in update_data['players']]
+
         updated_campaign = self.campaigns_collection.find_one_and_update(
             {'_id': ObjectId(campaign_id)},
             {'$set': update_data},
