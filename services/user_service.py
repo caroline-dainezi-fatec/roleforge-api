@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from bson import ObjectId
 from typing import List
+from pydantic import ValidationError
 from config import Config
 from models.user_model import User, UserCreate, UserUpdate
 
@@ -13,7 +14,6 @@ class UserService:
 
     def get_all_users(self) -> List[User]:
         users = self.users_collection.find()
-        print(users)
         return [User(id=str(user['_id']), name=user['name'], email=user['email']) for user in users]
 
     def get_user_by_id(self, user_id: str) -> User:
@@ -22,13 +22,23 @@ class UserService:
             return None
         return User(id=str(user['_id']), name=user['name'], email=user['email'])
 
+    def get_user_by_email(self, user_email: str) -> User:
+        user = self.users_collection.find_one({'email': user_email})
+        if user is None:
+            return None
+        return User(id=str(user['_id']), name=user['name'], email=user['email'])
+
     def create_user(self, user: UserCreate) -> User:
-        new_user = user.dict()
-        result = self.users_collection.insert_one(new_user)
-        return User(id=str(result.inserted_id), **new_user)
+        try:
+            new_user = user.model_dump()
+            result = self.users_collection.insert_one(new_user)
+            return User(id=str(result.inserted_id), **new_user)
+        except ValidationError as e:
+            print(f"Validation Error: {e}")
+            return None
 
     def update_user(self, user_id: str, user: UserUpdate) -> User:
-        update_data = {k: v for k, v in user.dict().items() if v is not None}
+        update_data = {k: v for k, v in user.model_dump().items() if v is not None}
         updated_user = self.users_collection.find_one_and_update(
             {'_id': ObjectId(user_id)},
             {'$set': update_data},

@@ -13,8 +13,16 @@ def get_users():
 
 
 @router.get("/{user_id}", response_model=User)
-def get_user(user_id: str):
+def get_user_by_id(user_id: str):
     user = user_service.get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    return user
+
+
+@router.get("/email/{user_email}", response_model=User)
+def get_user_by_email(user_email: str):
+    user = user_service.get_user_by_email(user_email)
     if user is None:
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
     return user
