@@ -22,17 +22,24 @@ class UserService:
             return None
         return User(id=str(user['_id']), name=user['name'], email=user['email'])
 
+    def get_users_by_ids(self, user_ids: List[str]) -> List[User]:
+        user_object_ids = list(map(ObjectId, user_ids))
+        users = self.users_collection.find({'_id': {"$in": user_object_ids}})
+        if users is None:
+            return None
+        return [User(id=str(user['_id']), name=user['name'], email=user['email']) for user in users]
+
     def get_user_by_email(self, user_email: str) -> User:
         user = self.users_collection.find_one({'email': user_email})
         if user is None:
             return None
         return User(id=str(user['_id']), name=user['name'], email=user['email'])
 
-    def create_user(self, user: UserCreate) -> User:
+    def create_user(self, user: UserCreate) -> dict[str, str] | None:
         try:
             new_user = user.model_dump()
             result = self.users_collection.insert_one(new_user)
-            return User(id=str(result.inserted_id), **new_user)
+            return {"detail": "Usuário cadastrado com sucesso!", "id": str(result.inserted_id)}
         except ValidationError as e:
             print(f"Validation Error: {e}")
             return None

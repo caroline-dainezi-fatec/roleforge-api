@@ -28,7 +28,7 @@ def get_user_by_email(user_email: str):
     return user
 
 
-@router.post("/", response_model=User)
+@router.post("/", response_model=dict[str, str])
 def create_user(user: UserCreate):
     return user_service.create_user(user)
 
