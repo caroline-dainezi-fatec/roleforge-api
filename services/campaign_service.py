@@ -37,8 +37,8 @@ class CampaignService:
         master = user_service.get_user_by_id(campaign['master'])
         players = user_service.get_users_by_ids(campaign['players'])
 
-        return Campaign(id=str(campaign['_id']), name=campaign['name'], master=master,
-                        players=players, character_sheet=campaign['character_sheet'])
+        return Campaign(id=str(campaign['_id']), name=campaign['name'], description=campaign['description'],
+                        master=master, players=players, character_sheet=campaign['character_sheet'])
 
     def create_campaign(self, campaign: CampaignCreate) -> dict[str, str] | None:
         try:
@@ -93,6 +93,7 @@ def get_campaigns_with_users(campaigns: List[Campaign]):
         result.append(Campaign(
             id=str(campaign['_id']),
             name=campaign['name'],
+            description=campaign['description'],
             master=master,
             players=players,
             character_sheet=campaign['character_sheet']
