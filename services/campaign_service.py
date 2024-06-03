@@ -40,6 +40,13 @@ class CampaignService:
         return Campaign(id=str(campaign['_id']), name=campaign['name'], description=campaign['description'],
                         master=master, players=players, character_sheet=campaign['character_sheet'])
 
+    def get_campaigns_by_ids(self, campaign_ids: List[str]) -> List[Campaign] | None:
+        campaign_object_ids = list(map(ObjectId, campaign_ids))
+        campaigns = list(self.campaigns_collection.find({'_id': {"$in": campaign_object_ids}}))
+        if campaigns is None:
+            return None
+        return get_campaigns_with_users(campaigns)
+
     def create_campaign(self, campaign: CampaignCreate) -> dict[str, str] | None:
         try:
             new_campaign = campaign.model_dump()
@@ -77,15 +84,14 @@ class CampaignService:
 
 
 def get_campaigns_with_users(campaigns: List[Campaign]):
-    # Collect all user IDs from campaigns
     user_ids = set()
     for campaign in campaigns:
         user_ids.add(campaign['master'])
         user_ids.update(campaign['players'])
-    # Fetch all users in a single batch
+
     users = user_service.get_users_by_ids(list(user_ids))
     user_map = {user.id: user for user in users}
-    # Map users to campaigns
+
     result = []
     for campaign in campaigns:
         master = user_map.get(str(campaign['master']))
