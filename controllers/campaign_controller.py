@@ -30,6 +30,14 @@ def get_campaigns_by_master(campaign_master: str):
     return campaigns
 
 
+@router.get("/player/{campaign_player}", response_model=List[Campaign])
+def get_campaigns_by_player(campaign_player: str):
+    campaigns = campaign_service.get_campaigns_by_player(campaign_player)
+    if campaigns is None:
+        raise HTTPException(status_code=404, detail="Este usuário não participa de nenhuma campanha.")
+    return campaigns
+
+
 @router.post("/", response_model=dict[str, str])
 def create_campaign(campaign: CampaignCreate):
     if user_service.get_user_by_id(campaign.master) is None:

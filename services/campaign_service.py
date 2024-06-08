@@ -29,6 +29,13 @@ class CampaignService:
 
         return get_campaigns_with_users(campaigns)
 
+    def get_campaigns_by_player(self, campaign_player: str) -> List[Campaign] | None:
+        campaigns = list(self.campaigns_collection.find({'players': ObjectId(campaign_player)}))
+        if not campaigns:
+            return []
+
+        return get_campaigns_with_users(campaigns)
+
     def get_campaign_by_id(self, campaign_id: str) -> Campaign | None:
         campaign = self.campaigns_collection.find_one({'_id': ObjectId(campaign_id)})
         if campaign is None:
