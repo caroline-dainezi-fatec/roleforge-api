@@ -3,7 +3,7 @@ from bson import ObjectId
 from typing import List
 from pydantic import ValidationError
 from config import Config
-from models.user_model import User, UserCreate, UserUpdate
+from app.models.user_model import User, UserCreate, UserUpdate
 
 
 class UserService:

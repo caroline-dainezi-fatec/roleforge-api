@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Dict, Any
-from models.user_model import User
-from models.campaign_model import Campaign
+from app.models.user_model import User
+from app.models.campaign_model import Campaign
 
 
 class Character(BaseModel):

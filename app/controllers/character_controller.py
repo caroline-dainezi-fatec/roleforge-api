@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from models.character_model import Character, CharacterCreate, CharacterUpdate
-from services.character_service import CharacterService
-from services.campaign_service import CampaignService
-from services.user_service import UserService
+from app.models.character_model import Character, CharacterCreate, CharacterUpdate
+from app.services.character_service import CharacterService
+from app.services.campaign_service import CampaignService
+from app.services.user_service import UserService
 
 router = APIRouter()
 character_service = CharacterService()
@@ -13,7 +13,10 @@ user_service = UserService()
 
 @router.get("/", response_model=List[Character])
 def get_characters():
-    return character_service.get_all_characters()
+    characters = character_service.get_all_characters()
+    if not characters:
+        raise HTTPException(status_code=404, detail="Nenhum personagem encontrado.")
+    return characters
 
 
 @router.get("/{character_id}", response_model=Character)

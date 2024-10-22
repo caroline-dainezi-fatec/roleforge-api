@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from models.user_model import User, UserCreate, UserUpdate
-from services.user_service import UserService
+from app.models.user_model import User, UserCreate, UserUpdate
+from app.services.user_service import UserService
 
 router = APIRouter()
 user_service = UserService()
@@ -9,7 +9,10 @@ user_service = UserService()
 
 @router.get("/", response_model=List[User])
 def get_users():
-    return user_service.get_all_users()
+    users = user_service.get_all_users()
+    if not users:
+        raise HTTPException(status_code=404, detail="Nenhum usuário encontrado.")
+    return users
 
 
 @router.get("/{user_id}", response_model=User)

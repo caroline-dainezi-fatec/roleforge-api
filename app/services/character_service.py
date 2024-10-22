@@ -3,10 +3,9 @@ from bson import ObjectId
 from typing import List
 from pydantic import ValidationError
 from config import Config
-from models.campaign_model import Campaign
-from models.character_model import Character, CharacterCreate, CharacterUpdate
-from services.user_service import UserService
-from services.campaign_service import CampaignService
+from app.models.character_model import Character, CharacterCreate, CharacterUpdate
+from app.services.user_service import UserService
+from app.services.campaign_service import CampaignService
 
 user_service = UserService()
 campaign_service = CampaignService()

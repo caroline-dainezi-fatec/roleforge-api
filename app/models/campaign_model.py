@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from typing import List
-from models.character_sheet_model import CharacterSheet
-from models.user_model import User
+
+from app.models.character_sheet_model import CharacterSheet
+from app.models.user_model import User
 
 
 class Campaign(BaseModel):
