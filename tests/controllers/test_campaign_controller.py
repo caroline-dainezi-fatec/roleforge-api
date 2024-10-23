@@ -205,47 +205,47 @@ class TestCampaignController:
         self.mock_user_service.get_users_by_ids.assert_called_once_with(campaign_create.players)
 
     def test_update_campaign(self, update_campaign_data):
-        campaign_id = str(ObjectId())
+        _id = str(ObjectId())
         campaign_update, expected_response = update_campaign_data
 
         self.mock_campaign_service.update_campaign.return_value = expected_response
 
-        response = self.client.put(f"/campaigns/{campaign_id}", json=campaign_update.model_dump())
+        response = self.client.put(f"/campaigns/{_id}", json=campaign_update.model_dump())
 
         assert response.status_code == 200
         assert response.json() == expected_response
-        self.mock_campaign_service.update_campaign.assert_called_once_with(campaign_id, campaign_update)
+        self.mock_campaign_service.update_campaign.assert_called_once_with(_id, campaign_update)
 
     def test_update_campaign_no_data(self, update_campaign_data):
-        campaign_id = str(ObjectId())
+        _id = str(ObjectId())
         campaign_update, _ = update_campaign_data
 
         self.mock_campaign_service.update_campaign.return_value = None
 
-        response = self.client.put(f"/campaigns/{campaign_id}", json=campaign_update.model_dump())
+        response = self.client.put(f"/campaigns/{_id}", json=campaign_update.model_dump())
 
         assert response.status_code == 404
         assert response.json() == {"detail": "Campanha não encontrada."}
-        self.mock_campaign_service.update_campaign.assert_called_once_with(campaign_id, campaign_update)
+        self.mock_campaign_service.update_campaign.assert_called_once_with(_id, campaign_update)
 
     def test_delete_campaign_success(self):
-        campaign_id = str(ObjectId())
+        _id = str(ObjectId())
 
         self.mock_campaign_service.delete_campaign.return_value = True
 
-        response = self.client.delete(f"/campaigns/{campaign_id}")
+        response = self.client.delete(f"/campaigns/{_id}")
 
         assert response.status_code == 200
         assert response.json() == {"message": "Campanha excluída com sucesso."}
-        self.mock_campaign_service.delete_campaign.assert_called_once_with(campaign_id)
+        self.mock_campaign_service.delete_campaign.assert_called_once_with(_id)
 
     def test_delete_campaign_not_found(self):
-        campaign_id = str(ObjectId())
+        _id = str(ObjectId())
 
         self.mock_campaign_service.delete_campaign.return_value = False
 
-        response = self.client.delete(f"/campaigns/{campaign_id}")
+        response = self.client.delete(f"/campaigns/{_id}")
 
         assert response.status_code == 404
         assert response.json() == {"detail": "Campanha não encontrada."}
-        self.mock_campaign_service.delete_campaign.assert_called_once_with(campaign_id)
+        self.mock_campaign_service.delete_campaign.assert_called_once_with(_id)
