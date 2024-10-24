@@ -243,8 +243,6 @@ class TestCampaignService:
         _id, campaign_create, expected_response = create_campaign_data
 
         self.mock_collection.insert_one.return_value = InsertOneResult(ObjectId(_id), acknowledged=True)
-        self.mock_user_service.get_user_by_id.return_value = campaign_create.master
-        self.mock_user_service.get_users_by_ids.return_value = campaign_create.players
 
         result = self.service.create_campaign(campaign_create)
 
@@ -273,7 +271,7 @@ class TestCampaignService:
         self.mock_collection.find_one_and_update.assert_called_once()
 
     def test_update_campaign_no_data(self, update_campaign_data):
-        _id, campaign_update, updated_campaign, expected_response = update_campaign_data
+        _id, campaign_update, _, _ = update_campaign_data
 
         self.mock_collection.find_one_and_update.return_value = None
 
@@ -294,7 +292,7 @@ class TestCampaignService:
         self.mock_collection.delete_one.assert_called_once()
 
     def test_get_campaigns_with_users(self, campaign_data):
-        raw_campaign, campaign, expected_response = campaign_data
+        raw_campaign, campaign, _ = campaign_data
 
         self.mock_user_service.get_users_by_ids.return_value = [campaign.master, campaign.players[0]]
 
